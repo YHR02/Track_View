@@ -21,26 +21,16 @@ interface AuthState {
   isAuthenticated: () => boolean;
 }
 
-const STORAGE_KEY_SPREADSHEET = 'trackwise_spreadsheet_id';
-
 export const useAuthStore = create<AuthState>((set, get) => ({
   accessToken: '',
   expiresAt: 0,
-  spreadsheetId: localStorage.getItem(STORAGE_KEY_SPREADSHEET) || '',
+  spreadsheetId: '',
   profile: null,
 
   setToken: (accessToken, expiresAt) => set({ accessToken, expiresAt }),
-  setSpreadsheetId: (spreadsheetId) => {
-    if (spreadsheetId) {
-      localStorage.setItem(STORAGE_KEY_SPREADSHEET, spreadsheetId);
-    } else {
-      localStorage.removeItem(STORAGE_KEY_SPREADSHEET);
-    }
-    set({ spreadsheetId });
-  },
+  setSpreadsheetId: (spreadsheetId) => set({ spreadsheetId }),
   setProfile: (profile) => set({ profile }),
   logout: () => {
-    localStorage.removeItem(STORAGE_KEY_SPREADSHEET);
     set({ accessToken: '', expiresAt: 0, spreadsheetId: '', profile: null });
   },
   isAuthenticated: () => {

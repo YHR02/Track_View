@@ -1,5 +1,5 @@
 import { Tracker } from '../types/tracker';
-import { Log } from '../types/log';
+import { Log } from '../types/entry';
 import { Category } from '../types/category';
 
 export function isTrackerCompleted(tracker: Tracker, value: string): boolean {

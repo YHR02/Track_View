@@ -3,7 +3,7 @@ import { useTrackers } from '../hooks/use-trackers';
 import { useLogsByDate, useUpsertLog } from '../hooks/use-logs';
 import { useCategories } from '../hooks/use-categories';
 import { Tracker } from '../types/tracker';
-import { Log } from '../types/log';
+import { Log } from '../types/entry';
 import { TimerControl } from '../components/dashboard/TimerControl';
 import { isTrackerCompleted } from '../services/analytics.service';
 import { 

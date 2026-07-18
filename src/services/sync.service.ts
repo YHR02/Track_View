@@ -1,5 +1,5 @@
-import { Log } from '../types/log';
-import { logRepository } from '../repositories';
+import { Log } from '../types/entry';
+import { entryRepository } from '../repositories';
 
 type SyncStatus = 'synced' | 'syncing' | 'error';
 
@@ -88,7 +88,7 @@ class SyncService {
       // Sync each item sequentially to prevent race conditions on row reads/writes
       for (const item of batch) {
         try {
-          const result = await logRepository.upsert(
+          const result = await entryRepository.upsert(
             item.trackerId,
             item.date,
             item.value,

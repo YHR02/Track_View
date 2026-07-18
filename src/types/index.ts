@@ -1,3 +1,4 @@
 export * from './tracker';
-export * from './log';
+export * from './entry';
 export * from './category';
+export * from './metadata';

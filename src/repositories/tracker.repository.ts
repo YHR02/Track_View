@@ -1,9 +1,9 @@
-import { ITrackerRepository } from '../interfaces/i-tracker.repository';
-import { Tracker, CreateTrackerInput, UpdateTrackerInput } from '../../types/tracker';
-import { gsheetClient } from '../../lib/gsheet';
-import { useAuthStore } from '../../stores/authStore';
+import { Tracker, CreateTrackerInput, UpdateTrackerInput } from '../types/tracker';
+import { sheetsClient } from '../lib/http-client';
+import { useAuthStore } from '../stores/authStore';
+import { SHEET_NAMES } from '../constants/sheetNames';
 
-const TAB_NAME = 'Trackers';
+const TAB_NAME = SHEET_NAMES.Trackers;
 
 interface GSheetRow {
   trackerId: string;
@@ -20,10 +20,10 @@ interface GSheetRow {
   _rowIdx?: number;
 }
 
-export class GSheetTrackerRepository implements ITrackerRepository {
+export class TrackerRepository {
   private getSpreadsheetId(): string {
     const { spreadsheetId } = useAuthStore.getState();
-    if (!spreadsheetId) throw new Error('Spreadsheet ID is not connection-configured');
+    if (!spreadsheetId) throw new Error('No spreadsheet connected. Please sign in again.');
     return spreadsheetId;
   }
 
@@ -45,32 +45,32 @@ export class GSheetTrackerRepository implements ITrackerRepository {
 
   async list(): Promise<Tracker[]> {
     const id = this.getSpreadsheetId();
-    const rows = await gsheetClient.getRows<GSheetRow>(id, `${TAB_NAME}!A:K`);
+    const rows = await sheetsClient.getRows<GSheetRow>(id, `${TAB_NAME}!A:K`);
     return rows
-      .map((r) => this.mapRowToTracker(r))
-      .filter((t) => !t.archived);
+      .map(r => this.mapRowToTracker(r))
+      .filter(t => !t.archived);
   }
 
   async getById(trackerId: string): Promise<Tracker | null> {
     const list = await this.list();
-    return list.find((t) => t.trackerId === trackerId) || null;
+    return list.find(t => t.trackerId === trackerId) ?? null;
   }
 
   async create(data: CreateTrackerInput): Promise<Tracker> {
     const id = this.getSpreadsheetId();
     const trackerId = data.trackerId || crypto.randomUUID();
     const createdAt = data.createdAt || new Date().toISOString();
-    
+
     const newTracker: Tracker = {
       ...data,
       trackerId,
-      archived: data.archived || false,
+      archived: data.archived ?? false,
       createdAt,
       target: data.target ?? null,
       unit: data.unit ?? null,
     };
 
-    await gsheetClient.appendRow(id, TAB_NAME, {
+    await sheetsClient.appendRow(id, TAB_NAME, {
       trackerId: newTracker.trackerId,
       name: newTracker.name,
       type: newTracker.type,
@@ -89,21 +89,20 @@ export class GSheetTrackerRepository implements ITrackerRepository {
 
   async update(trackerId: string, data: UpdateTrackerInput): Promise<Tracker> {
     const id = this.getSpreadsheetId();
-    const rows = await gsheetClient.getRows<GSheetRow>(id, `${TAB_NAME}!A:K`);
-    const rowIndex = rows.findIndex((r) => r.trackerId === trackerId);
-    
+    const rows = await sheetsClient.getRows<GSheetRow>(id, `${TAB_NAME}!A:K`);
+    const rowIndex = rows.findIndex(r => r.trackerId === trackerId);
+
     if (rowIndex === -1) {
-      throw new Error(`Tracker not found in sheet: ${trackerId}`);
+      throw new Error(`Tracker not found: ${trackerId}`);
     }
 
     const row = rows[rowIndex];
-    const tracker = this.mapRowToTracker(row);
     const updatedTracker: Tracker = {
-      ...tracker,
+      ...this.mapRowToTracker(row),
       ...data,
     } as Tracker;
 
-    await gsheetClient.updateRow(id, TAB_NAME, row._rowIdx!, {
+    await sheetsClient.updateRow(id, TAB_NAME, row._rowIdx!, {
       trackerId: updatedTracker.trackerId,
       name: updatedTracker.name,
       type: updatedTracker.type,
@@ -126,18 +125,15 @@ export class GSheetTrackerRepository implements ITrackerRepository {
 
   async reorder(orderedIds: string[]): Promise<void> {
     const id = this.getSpreadsheetId();
-    // Read all trackers, including archived ones
-    const rows = await gsheetClient.getRows<GSheetRow>(id, `${TAB_NAME}!A:K`);
-    
-    // Split into active and archived
-    const activeRows = rows.filter((r) => r.archived !== 'TRUE' && r.archived !== 'true');
-    const archivedRows = rows.filter((r) => r.archived === 'TRUE' || r.archived === 'true');
+    const rows = await sheetsClient.getRows<GSheetRow>(id, `${TAB_NAME}!A:K`);
 
-    // Reorder active rows
-    const rowMap = new Map(activeRows.map((r) => [r.trackerId, r]));
+    const activeRows = rows.filter(r => r.archived !== 'TRUE' && r.archived !== 'true');
+    const archivedRows = rows.filter(r => r.archived === 'TRUE' || r.archived === 'true');
+
+    const rowMap = new Map(activeRows.map(r => [r.trackerId, r]));
     const nextActiveRows: GSheetRow[] = [];
-    
-    orderedIds.forEach((tid) => {
+
+    orderedIds.forEach(tid => {
       const r = rowMap.get(tid);
       if (r) {
         nextActiveRows.push(r);
@@ -145,19 +141,20 @@ export class GSheetTrackerRepository implements ITrackerRepository {
       }
     });
 
-    // Append any left-over active rows
-    rowMap.forEach((r) => nextActiveRows.push(r));
+    rowMap.forEach(r => nextActiveRows.push(r));
 
     const finalRows = [...nextActiveRows, ...archivedRows];
+    const headers = [
+      'trackerId', 'name', 'type', 'categoryId', 'target', 'unit',
+      'color', 'icon', 'frequency', 'archived', 'createdAt',
+    ];
+    const values = finalRows.map(r =>
+      headers.map(h => (r[h as keyof GSheetRow] !== undefined ? String(r[h as keyof GSheetRow]) : ''))
+    );
 
-    // Build values array (excluding index columns)
-    const headers = ['trackerId', 'name', 'type', 'categoryId', 'target', 'unit', 'color', 'icon', 'frequency', 'archived', 'createdAt'];
-    const values = finalRows.map((r) => headers.map((h) => r[h as keyof GSheetRow] !== undefined ? String(r[h as keyof GSheetRow]) : ''));
-
-    // Clear entire trackers sheet content below header
-    await gsheetClient.clearRange(id, `${TAB_NAME}!A2:K${rows.length + 10}`);
-
-    // Write back sorted entries
-    await gsheetClient.updateRange(id, `${TAB_NAME}!A2`, values);
+    await sheetsClient.clearRange(id, `${TAB_NAME}!A2:K${rows.length + 10}`);
+    await sheetsClient.updateRange(id, `${TAB_NAME}!A2`, values);
   }
 }
+
+export const trackerRepository = new TrackerRepository();

@@ -1,4 +1,4 @@
-import { Log } from '../types/log';
+import { Log } from '../types/entry';
 
 export const logService = {
   // Utility to group flat entries by date

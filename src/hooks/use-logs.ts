@@ -1,13 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { logRepository } from '../repositories';
+import { entryRepository } from '../repositories';
 import { syncService } from '../services/sync.service';
-import { Log } from '../types/log';
+import { Log } from '../types/entry';
 import { useToastStore } from '../stores/toast.store';
 
 export function useLogsByDate(date: string) {
   return useQuery({
     queryKey: ['logs', 'date', date],
-    queryFn: () => logRepository.getByDate(date),
+    queryFn: () => entryRepository.getByDate(date),
     staleTime: 30 * 1000, // 30 seconds
   });
 }
@@ -15,7 +15,7 @@ export function useLogsByDate(date: string) {
 export function useLogsByMonth(year: number, month: number) {
   return useQuery({
     queryKey: ['logs', 'month', year, month],
-    queryFn: () => logRepository.getMonth(year, month),
+    queryFn: () => entryRepository.getMonth(year, month),
     staleTime: 60 * 1000, // 1 minute
   });
 }
@@ -23,7 +23,7 @@ export function useLogsByMonth(year: number, month: number) {
 export function useLogsByRange(startDate: string, endDate: string) {
   return useQuery({
     queryKey: ['logs', 'range', startDate, endDate],
-    queryFn: () => logRepository.getByDateRange(startDate, endDate),
+    queryFn: () => entryRepository.getByDateRange(startDate, endDate),
     staleTime: 60 * 1000,
   });
 }

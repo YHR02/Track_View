@@ -7,28 +7,19 @@ import { Calendar } from '../pages/Calendar';
 import { Analytics } from '../pages/Analytics';
 import { Settings } from '../pages/Settings';
 import { Login } from '../pages/Login';
-import { Setup } from '../pages/Setup';
 import { NotFound } from '../pages/NotFound';
 
 export function AppRouter() {
   return (
     <Routes>
       {/* Standalone Full-screen Routes */}
-      <Route 
-        path="/login" 
+      <Route
+        path="/login"
         element={
           <AuthGuard>
             <Login />
           </AuthGuard>
-        } 
-      />
-      <Route 
-        path="/setup" 
-        element={
-          <AuthGuard>
-            <Setup />
-          </AuthGuard>
-        } 
+        }
       />
 
       {/* Main Pages wrapped inside Layout Shell */}
