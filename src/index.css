@@ -1,0 +1,189 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Nunito", system-ui, -apple-system, sans-serif;
+  --font-display: "Fredoka", "Nunito", system-ui, -apple-system, sans-serif;
+  
+  --color-brand-50: #f5f3ff;
+  --color-brand-100: #ede9fe;
+  --color-brand-200: #ddd6fe;
+  --color-brand-300: #c4b5fd;
+  --color-brand-400: #a78bfa;
+  --color-brand-500: #8b5cf6;
+  --color-brand-600: #7c3aed;
+  --color-brand-700: #6d28d9;
+  --color-brand-800: #5b21b6;
+  --color-brand-900: #4c1d95;
+  --color-brand-950: #2e1065;
+}
+
+/* Playful Neo-Brutalist Theme Variables */
+:root {
+  --bg-primary: #FFF4D0;
+  --border-black: #000000;
+  --card-white: #FFFFFF;
+  
+  --pastel-blue: #87CEEB;
+  --pastel-blue-dark: #69D2E7;
+  --pastel-green: #90EE90;
+  --pastel-green-dark: #7FBC8C;
+  --pastel-yellow: #FFDB58;
+  --pastel-yellow-dark: #F4D738;
+  --pastel-orange: #FFA07A;
+  --pastel-orange-dark: #E3A018;
+  --pastel-red: #FF6B6B;
+  --pastel-pink: #FFB2EF;
+  --pastel-pink-dark: #FF69B4;
+  --pastel-purple: #A388EE;
+  --pastel-purple-dark: #9723C9;
+  --pastel-lavender: #E3DFF2;
+}
+
+/* Base custom resets */
+html {
+  font-family: var(--font-sans);
+  scroll-behavior: smooth;
+  background-color: var(--bg-primary);
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: #000000;
+}
+
+/* Playful Neo-Brutalist Utilities */
+
+/* 1. Cards */
+.neo-card {
+  background-color: var(--card-white);
+  border: 4px solid var(--border-black);
+  border-radius: 18px;
+  box-shadow: 6px 6px 0px var(--border-black);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.neo-card-hover:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0px var(--border-black);
+}
+
+/* 2. Interactive Buttons */
+.neo-btn {
+  background-color: var(--card-white);
+  border: 3px solid var(--border-black);
+  border-radius: 14px;
+  box-shadow: 5px 5px 0px var(--border-black);
+  font-weight: 700;
+  transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.neo-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0px var(--border-black);
+}
+
+.neo-btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: 1px 1px 0px var(--border-black);
+}
+
+/* Custom Colored Neo Buttons */
+.neo-btn-primary {
+  background-color: var(--pastel-purple);
+}
+
+.neo-btn-success {
+  background-color: var(--pastel-green);
+}
+
+.neo-btn-danger {
+  background-color: var(--pastel-red);
+}
+
+.neo-btn-warning {
+  background-color: var(--pastel-yellow);
+}
+
+/* 3. Input Fields */
+.neo-input {
+  background-color: var(--card-white);
+  border: 3px solid var(--border-black);
+  border-radius: 14px;
+  font-weight: 600;
+  transition: border-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+  outline: none;
+}
+
+.neo-input:focus {
+  border-color: var(--pastel-purple-dark);
+  transform: translate(-1px, -1px);
+}
+
+/* Custom Checkbox Design */
+.neo-checkbox {
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  border: 3px solid var(--border-black);
+  border-radius: 6px;
+  background-color: #FFFFFF;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.neo-checkbox:checked {
+  background-color: var(--pastel-green);
+  transform: scale(1.12);
+}
+
+.neo-checkbox:checked::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: 900;
+  font-size: 16px;
+  color: #000000;
+}
+
+/* Page Animations */
+@keyframes pop-in {
+  0% { transform: scale(0.96); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-pop-in {
+  animation: pop-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Floating animation for cards */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-black);
+  border: 2px solid var(--bg-primary);
+  border-radius: 9999px;
+}
