@@ -26,14 +26,14 @@ const PRESET_ICONS = [
 ];
 
 const PRESET_COLORS = [
-  '#87CEEB', // Pastel Blue
-  '#90EE90', // Pastel Green
-  '#FFDB58', // Pastel Yellow
-  '#FFA07A', // Pastel Orange
-  '#FF6B6B', // Pastel Red
-  '#FFB2EF', // Pastel Pink
-  '#A388EE', // Pastel Purple
-  '#E3DFF2', // Soft Lavender
+  '#3b82f6', // Blue
+  '#10b981', // Emerald
+  '#ef4444', // Red
+  '#f59e0b', // Amber
+  '#8b5cf6', // Violet
+  '#ec4899', // Pink
+  '#a1a1aa', // Zinc
+  '#14b8a6', // Teal
 ];
 
 export function Trackers() {
@@ -143,18 +143,18 @@ export function Trackers() {
   };
 
   return (
-    <div className="space-y-8 animate-pop-in">
-      <div className="flex items-center justify-between">
+    <div className="space-y-8 animate-pop-in text-zinc-100 font-sans">
+      <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
         <div>
-          <h2 className="text-3xl font-display font-black tracking-tight text-black">Trackers</h2>
-          <p className="text-sm opacity-65 font-bold">Manage and organize your habits & metrics</p>
+          <h2 className="text-xl font-bold tracking-tight text-zinc-100">Trackers</h2>
+          <p className="text-xs text-zinc-400 font-medium mt-0.5">Manage and organize your habits & metrics</p>
         </div>
         
         <button
           onClick={openCreateModal}
-          className="neo-btn bg-[#A388EE] border-3 border-black text-black px-5 py-3 shadow-[4px_4px_0px_#000000] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_#000000] active:translate-y-[4px] active:shadow-[1px_1px_0px_#000000] text-sm font-black cursor-pointer gap-2"
+          className="bg-zinc-100 hover:bg-zinc-200 text-zinc-950 px-4 py-2 rounded text-xs font-semibold cursor-pointer flex items-center gap-1.5 transition-colors"
         >
-          <Plus className="w-4 h-4 stroke-[3]" />
+          <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
           Add Tracker
         </button>
       </div>
@@ -164,26 +164,28 @@ export function Trackers() {
           {[1, 2, 3].map((n) => (
             <div 
               key={n} 
-              className="h-44 rounded-[18px] border-4 border-black bg-white shadow-[6px_6px_0px_#000000] animate-pulse"
+              className="h-36 rounded border border-zinc-800 bg-zinc-900/30 animate-pulse"
             />
           ))}
         </div>
       ) : trackers.length === 0 ? (
-        <div className="flex flex-col items-center justify-center p-12 text-center rounded-[18px] border-4 border-black bg-white shadow-[6px_6px_0px_#000000] max-w-xl mx-auto">
-          <div className="w-16 h-16 rounded-[14px] border-3 border-black bg-[#FFB2EF] flex items-center justify-center shadow-[3px_3px_0px_#000000] mb-4">
-            <FolderHeart className="w-8 h-8 text-black stroke-[2.5]" />
+        <div className="flex flex-col items-center justify-center p-12 text-center border border-zinc-800 bg-zinc-900/10 rounded-lg max-w-xl mx-auto space-y-4">
+          <div className="w-12 h-12 rounded bg-zinc-900 border border-zinc-850 flex items-center justify-center">
+            <FolderHeart className="w-6 h-6 text-zinc-400" />
           </div>
-          <h3 className="text-xl font-display font-black text-black">No trackers yet</h3>
-          <p className="text-sm font-semibold opacity-60 max-w-sm mt-1 mb-6">Create a tracker for your daily runs, books read, or focus sessions to begin logging.</p>
+          <h3 className="text-sm font-bold text-zinc-200">No trackers yet</h3>
+          <p className="text-xs text-zinc-500 max-w-sm leading-relaxed">
+            Create a tracker for your daily runs, books read, or focus sessions to begin logging.
+          </p>
           <button
             onClick={openCreateModal}
-            className="neo-btn bg-[#FFDB58] border-3 border-black text-black px-5 py-2.5 shadow-[4px_4px_0px_#000000] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_#000000] active:translate-y-[4px] active:shadow-[1px_1px_0px_#000000] text-sm font-black cursor-pointer"
+            className="bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border border-zinc-750 px-4 py-2 rounded text-xs font-semibold cursor-pointer transition-colors"
           >
             Create Your First Tracker
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {trackers.map((t, idx) => {
             const cat = categoryMap.get(t.categoryId);
             return (
@@ -193,25 +195,25 @@ export function Trackers() {
                 onDragStart={() => handleDragStart(idx)}
                 onDragOver={(e) => handleDragOver(e, idx)}
                 onDragEnd={handleDragEnd}
-                className="neo-card hover:translate-y-[-3px] hover:shadow-[9px_9px_0px_#000000] p-5 select-none cursor-grab active:cursor-grabbing bg-white flex flex-col justify-between relative group"
+                className="brutalist-card p-5 select-none cursor-grab active:cursor-grabbing hover:border-zinc-700 flex flex-col justify-between relative group"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-center gap-3">
                     <div 
-                      className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0 border-3 border-black shadow-[2px_2px_0px_#000000]"
-                      style={{ backgroundColor: t.color }}
+                      className="w-10 h-10 rounded flex items-center justify-center text-xl shrink-0 border border-zinc-800 bg-zinc-900"
+                      style={{ borderLeft: `3px solid ${t.color}` }}
                     >
                       {t.icon}
                     </div>
                     <div>
-                      <h3 className="font-display font-black text-base md:text-lg tracking-tight leading-tight text-black">{t.name}</h3>
-                      <div className="flex items-center gap-2 mt-1.5">
+                      <h3 className="font-semibold text-xs md:text-sm text-zinc-200 leading-none">{t.name}</h3>
+                      <div className="flex items-center gap-1.5 mt-2">
                         {cat && (
-                          <span className="text-[10px] font-black px-2 py-0.5 rounded-lg border-2 border-black uppercase tracking-wider bg-slate-100">
+                          <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-zinc-900 border border-zinc-850 text-zinc-400 uppercase">
                             {cat.icon} {cat.name}
                           </span>
                         )}
-                        <span className="text-[10px] font-black px-2 py-0.5 rounded-lg border-2 border-black uppercase tracking-wider bg-[#E3DFF2]">
+                        <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-zinc-900 border border-zinc-850 text-zinc-450 uppercase">
                           {t.type}
                         </span>
                       </div>
@@ -221,27 +223,27 @@ export function Trackers() {
                   <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button
                       onClick={() => openEditModal(t)}
-                      className="p-1.5 rounded-lg border-2 border-black bg-white hover:bg-slate-50 shadow-[2px_2px_0px_#000000] active:translate-y-[2px] active:shadow-none cursor-pointer"
+                      className="p-1 rounded border border-zinc-800 bg-zinc-900 text-zinc-400 hover:text-zinc-100 cursor-pointer"
                     >
-                      <Edit3 className="w-4 h-4 stroke-[2.5] text-black" />
+                      <Edit3 className="w-3.5 h-3.5" />
                     </button>
-                    <div className="p-1.5 cursor-grab opacity-40 hover:opacity-75">
-                      <Move className="w-4 h-4 text-black stroke-[2.5]" />
+                    <div className="p-1 cursor-grab text-zinc-600 hover:text-zinc-400">
+                      <Move className="w-3.5 h-3.5" />
                     </div>
                   </div>
                 </div>
 
                 {/* Goal metrics detail */}
-                <div className="mt-6 pt-4 border-t-2 border-dashed border-slate-300 flex items-center justify-between text-xs font-black opacity-75">
-                  <div className="flex items-center gap-1.5">
-                    <CalendarDays className="w-4 h-4 text-black stroke-[2.5]" />
-                    <span className="capitalize">{t.frequency}</span>
+                <div className="mt-5 pt-3.5 border-t border-zinc-900 flex items-center justify-between text-[10px] font-semibold text-zinc-500 font-mono">
+                  <div className="flex items-center gap-1">
+                    <CalendarDays className="w-3.5 h-3.5 stroke-[2]" />
+                    <span className="uppercase">{t.frequency}</span>
                   </div>
                   {t.target && (
-                    <div className="flex items-center gap-1.5">
-                      <Target className="w-4 h-4 text-black stroke-[2.5]" />
+                    <div className="flex items-center gap-1">
+                      <Target className="w-3.5 h-3.5 stroke-[2]" />
                       <span>
-                        Target: {t.target} {t.unit || ''}
+                        TARGET: {t.target} {t.unit || ''}
                       </span>
                     </div>
                   )}
@@ -258,26 +260,26 @@ export function Trackers() {
         onClose={() => setFormOpen(false)}
         title={editingTracker ? 'Edit Tracker' : 'Create Tracker'}
       >
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-black uppercase opacity-75 mb-1.5">Name</label>
+            <label className="block text-[10px] font-semibold text-zinc-400 uppercase tracking-wider mb-1">Name</label>
             <input
               type="text"
               placeholder="e.g. Drink Water, Gym"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="neo-input w-full px-4 py-3 text-sm bg-white"
+              className="brutalist-input w-full px-3 py-2 text-xs"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-black uppercase opacity-75 mb-1.5">Category</label>
+              <label className="block text-[10px] font-semibold text-zinc-400 uppercase tracking-wider mb-1">Category</label>
               <select
                 value={categoryId}
                 onChange={(e) => setCategoryId(e.target.value)}
-                className="neo-input w-full px-4 py-3 text-sm bg-white"
+                className="brutalist-input w-full px-3 py-2 text-xs bg-zinc-900"
               >
                 {categories.map((c) => (
                   <option key={c.categoryId} value={c.categoryId}>
@@ -287,11 +289,11 @@ export function Trackers() {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-black uppercase opacity-75 mb-1.5">Frequency</label>
+              <label className="block text-[10px] font-semibold text-zinc-400 uppercase tracking-wider mb-1">Frequency</label>
               <select
                 value={frequency}
                 onChange={(e) => setFrequency(e.target.value as TrackerFrequency)}
-                className="neo-input w-full px-4 py-3 text-sm bg-white"
+                className="brutalist-input w-full px-3 py-2 text-xs bg-zinc-900"
               >
                 <option value="daily">Daily</option>
                 <option value="weekly">Weekly</option>
@@ -302,11 +304,11 @@ export function Trackers() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-black uppercase opacity-75 mb-1.5">Type</label>
+              <label className="block text-[10px] font-semibold text-zinc-400 uppercase tracking-wider mb-1">Type</label>
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value as TrackerType)}
-                className="neo-input w-full px-4 py-3 text-sm bg-white"
+                className="brutalist-input w-full px-3 py-2 text-xs bg-zinc-900"
               >
                 <option value="boolean">Done/Not Done</option>
                 <option value="numeric">Number Metric</option>
@@ -317,7 +319,7 @@ export function Trackers() {
             {type !== 'boolean' && (
               <>
                 <div>
-                  <label className="block text-xs font-black uppercase opacity-75 mb-1.5">Daily Target</label>
+                  <label className="block text-[10px] font-semibold text-zinc-400 uppercase tracking-wider mb-1">Daily Target</label>
                   <input
                     type="number"
                     placeholder="e.g. 10, 60"
@@ -325,18 +327,18 @@ export function Trackers() {
                     onChange={(e) => setTarget(e.target.value === '' ? '' : Number(e.target.value))}
                     required
                     min="1"
-                    className="neo-input w-full px-4 py-3 text-sm bg-white"
+                    className="brutalist-input w-full px-3 py-2 text-xs"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-black uppercase opacity-75 mb-1.5">Unit</label>
+                  <label className="block text-[10px] font-semibold text-zinc-400 uppercase tracking-wider mb-1">Unit</label>
                   <input
                     type="text"
                     placeholder="e.g. pages, mins"
                     value={unit}
                     onChange={(e) => setUnit(e.target.value)}
                     required
-                    className="neo-input w-full px-4 py-3 text-sm bg-white"
+                    className="brutalist-input w-full px-3 py-2 text-xs"
                   />
                 </div>
               </>
@@ -345,15 +347,15 @@ export function Trackers() {
 
           {/* Icon Picker */}
           <div>
-            <label className="block text-xs font-black uppercase opacity-75 mb-2">Select Icon</label>
-            <div className="grid grid-cols-6 gap-2 p-3 rounded-xl border-3 border-black bg-slate-50 max-h-36 overflow-y-auto">
+            <label className="block text-[10px] font-semibold text-zinc-400 uppercase tracking-wider mb-1.5">Select Icon</label>
+            <div className="grid grid-cols-6 gap-1.5 p-2 rounded bg-zinc-900 border border-zinc-800 max-h-32 overflow-y-auto">
               {PRESET_ICONS.map((i) => (
                 <button
                   key={i}
                   type="button"
                   onClick={() => setIcon(i)}
-                  className={`h-10 rounded-lg flex items-center justify-center text-lg hover:bg-slate-100 transition-all border-2 border-transparent ${
-                    icon === i ? 'bg-[#FFB2EF] border-black shadow-[2px_2px_0px_#000000] scale-105' : 'cursor-pointer'
+                  className={`h-8 rounded flex items-center justify-center text-sm hover:bg-zinc-800 transition-all border border-transparent ${
+                    icon === i ? 'bg-zinc-800 border-zinc-700 text-zinc-100 scale-105' : 'cursor-pointer text-zinc-400'
                   }`}
                 >
                   {i}
@@ -364,26 +366,26 @@ export function Trackers() {
 
           {/* Color Picker */}
           <div>
-            <label className="block text-xs font-black uppercase opacity-75 mb-2">Select Theme Color</label>
-            <div className="flex flex-wrap items-center gap-3">
+            <label className="block text-[10px] font-semibold text-zinc-400 uppercase tracking-wider mb-1.5">Select Theme Color</label>
+            <div className="flex flex-wrap items-center gap-2">
               {PRESET_COLORS.map((c) => (
                 <button
                   key={c}
                   type="button"
                   onClick={() => setColor(c)}
-                  className="w-8 h-8 rounded-full border-2 border-black flex items-center justify-center text-black shadow-[1px_1px_0px_#000000] hover:scale-105 transition-all cursor-pointer"
+                  className="w-6 h-6 rounded-full border border-zinc-800 flex items-center justify-center text-zinc-950 hover:scale-105 transition-all cursor-pointer"
                   style={{ backgroundColor: c }}
                 >
-                  {color === c && <Check className="w-4 h-4 stroke-[3]" />}
+                  {color === c && <Check className="w-3.5 h-3.5 text-zinc-950 stroke-[3]" />}
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="flex items-center gap-3 pt-4 border-t-3 border-black">
+          <div className="flex items-center gap-3 pt-3 border-t border-zinc-900">
             <button
               type="submit"
-              className="neo-btn bg-[#90EE90] border-3 border-black text-black flex-1 py-3.5 shadow-[4px_4px_0px_#000000] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_#000000] active:translate-y-[4px] active:shadow-[1px_1px_0px_#000000] text-sm font-black cursor-pointer"
+              className="bg-zinc-100 hover:bg-zinc-200 text-zinc-950 flex-1 py-2 rounded text-xs font-semibold cursor-pointer transition-colors"
             >
               {editingTracker ? 'Save Changes' : 'Create Tracker'}
             </button>
@@ -391,9 +393,9 @@ export function Trackers() {
               <button
                 type="button"
                 onClick={() => handleDelete(editingTracker.trackerId)}
-                className="neo-btn bg-[#FF6B6B] border-3 border-black text-black p-3.5 shadow-[4px_4px_0px_#000000] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_#000000] active:translate-y-[4px] active:shadow-[1px_1px_0px_#000000] cursor-pointer"
+                className="bg-red-950/20 hover:bg-red-950/40 text-red-400 border border-red-900 p-2 rounded cursor-pointer transition-all"
               >
-                <Trash2 className="w-5 h-5 stroke-[2.5]" />
+                <Trash2 className="w-4 h-4" />
               </button>
             )}
           </div>

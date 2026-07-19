@@ -43,13 +43,12 @@ export function useUpsertLog() {
     mutationFn: ({ trackerId, date, value, note }: UpsertLogVariables) =>
       syncService.enqueue(trackerId, date, value, note),
     onMutate: async ({ trackerId, date, value, note }) => {
-      // 1. Cancel queries for specific logs
+      // 1. Cancel queries for all logs to prevent overwrites
+      await queryClient.cancelQueries({ queryKey: ['logs'] });
+
       const dateKey = ['logs', 'date', date];
       const monthKey = ['logs', 'month', parseInt(date.substring(0, 4)), parseInt(date.substring(5, 7))];
       
-      await queryClient.cancelQueries({ queryKey: dateKey });
-      await queryClient.cancelQueries({ queryKey: monthKey });
-
       // 2. Snapshot previous logs
       const previousDateLogs = queryClient.getQueryData<Log[]>(dateKey) || [];
       const previousMonthLogs = queryClient.getQueryData<Log[]>(monthKey) || [];
@@ -63,6 +62,7 @@ export function useUpsertLog() {
         createdAt: new Date().toISOString(),
       };
 
+      // 3. Optimistically update today's logs cache
       const nextDateLogs = previousDateLogs.some((l) => l.trackerId === trackerId)
         ? previousDateLogs.map((l) => (l.trackerId === trackerId ? updatedLog : l))
         : [...previousDateLogs, updatedLog];
@@ -76,24 +76,45 @@ export function useUpsertLog() {
         
       queryClient.setQueryData<Log[]>(monthKey, nextMonthLogs);
 
-      return { previousDateLogs, previousMonthLogs, dateKey, monthKey };
+      // 5. Optimistically update range queries (Heatmap/Stats)
+      const rangeQueries = queryClient.getQueryCache().findAll({ queryKey: ['logs', 'range'] });
+      const previousRangeSnapshots: Array<{ queryKey: any; data: Log[] | undefined }> = [];
+
+      rangeQueries.forEach((query) => {
+        const previousData = query.state.data as Log[] | undefined;
+        previousRangeSnapshots.push({ queryKey: query.queryKey, data: previousData });
+
+        if (previousData) {
+          const nextRangeData = previousData.some((l) => l.trackerId === trackerId && l.date === date)
+            ? previousData.map((l) => (l.trackerId === trackerId && l.date === date ? updatedLog : l))
+            : [...previousData, updatedLog];
+          queryClient.setQueryData(query.queryKey, nextRangeData);
+        }
+      });
+
+      return { 
+        previousDateLogs, 
+        previousMonthLogs, 
+        previousRangeSnapshots,
+        dateKey, 
+        monthKey 
+      };
     },
     onError: (err, _variables, context) => {
-      // Rollback caches
+      // Rollback all caches on error
       if (context) {
         queryClient.setQueryData(context.dateKey, context.previousDateLogs);
         queryClient.setQueryData(context.monthKey, context.previousMonthLogs);
+        context.previousRangeSnapshots.forEach((snap) => {
+          queryClient.setQueryData(snap.queryKey, snap.data);
+        });
       }
       addToast(err instanceof Error ? err.message : 'Sync failed. Local change kept.', 'warning');
     },
-    onSuccess: () => {
-      // Optional: Add toast notifications on sync success (e.g. for user feedback)
-    },
-    onSettled: (_data, _error, _variables, context) => {
-      if (context) {
-        queryClient.invalidateQueries({ queryKey: context.dateKey });
-        queryClient.invalidateQueries({ queryKey: context.monthKey });
-      }
+    onSuccess: () => {},
+    onSettled: () => {
+      // Invalidate the entire logs tree (date, month, range) to trigger synchronised refetches
+      queryClient.invalidateQueries({ queryKey: ['logs'] });
     },
   });
 }
