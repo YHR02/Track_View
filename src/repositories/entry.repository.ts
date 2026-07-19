@@ -23,11 +23,20 @@ export class EntryRepository {
   }
 
   private mapRowToEntry(row: GSheetEntryRow): Entry {
+    // Google Sheets stores boolean values as TRUE/FALSE (uppercase) when using
+    // USER_ENTERED valueInputOption. Normalize here so all layers above receive
+    // consistent lowercase 'true'/'false' strings.
+    const rawValue = String(row.value ?? '').trim();
+    const normalizedValue =
+      rawValue.toLowerCase() === 'true' ? 'true' :
+      rawValue.toLowerCase() === 'false' ? 'false' :
+      rawValue;
+
     return {
       entryId: row.entryId,
       trackerId: row.trackerId,
       date: row.date,
-      value: row.value,
+      value: normalizedValue,
       note: row.note || null,
       createdAt: row.createdAt,
     };

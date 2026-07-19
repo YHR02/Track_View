@@ -5,7 +5,7 @@ import { Category } from '../types/category';
 export function isTrackerCompleted(tracker: Tracker, value: string): boolean {
   if (!value) return false;
   if (tracker.type === 'boolean') {
-    return value === 'true';
+    return String(value).toLowerCase() === 'true';
   } else if (tracker.type === 'numeric') {
     const val = parseFloat(value) || 0;
     return typeof tracker.target === 'number' && val >= tracker.target;
