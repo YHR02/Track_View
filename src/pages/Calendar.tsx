@@ -43,7 +43,6 @@ export function Calendar() {
     }
   };
 
-  // Helper arrays for calendar rendering
   const getDaysInMonth = (year: number, month: number): number => {
     return new Date(year, month + 1, 0).getDate();
   };
@@ -52,33 +51,28 @@ export function Calendar() {
     return new Date(year, month, 1).getDay();
   };
 
-  // Build grid data structure
   const daysInMonth = getDaysInMonth(currentYear, currentMonth);
   const firstDayIndex = getFirstDayOfMonth(currentYear, currentMonth);
 
-  // Group logs by date (memoized to avoid recalculating on selectedDate changes)
   const logsByDate = useMemo(() => {
     return logService.groupLogsByDate(monthLogs);
   }, [monthLogs]);
 
-  // Calculate day completion rate using domain helper
   const getDayCompletionRateLocal = (dateStr: string): number => {
     const dayLogs = logsByDate[dateStr] || [];
     return getDayCompletionRate(dateStr, trackers, dayLogs);
   };
 
   const getCellColorClass = (rate: number): string => {
-    if (rate === 0) return 'bg-white text-black border-2 border-black';
-    if (rate < 30) return 'bg-[#E3DFF2] text-black border-2 border-black';
-    if (rate < 70) return 'bg-[#7FBC8C] text-black border-2 border-black font-bold';
-    return 'bg-[#90EE90] text-black border-2 border-black font-black';
+    if (rate === 0) return 'bg-zinc-900 border border-zinc-800/80 text-zinc-400';
+    if (rate < 30) return 'bg-emerald-950/20 border border-emerald-900/40 text-emerald-450';
+    if (rate < 70) return 'bg-emerald-900/40 border border-emerald-800/60 text-emerald-350';
+    return 'bg-emerald-500 text-zinc-950 border border-emerald-450 font-bold';
   };
 
-  // Generate weeks grid
   const weeks: (Date | null)[][] = [];
   let currentWeek: (Date | null)[] = [];
 
-  // Pad the first week
   for (let i = 0; i < firstDayIndex; i++) {
     currentWeek.push(null);
   }
@@ -93,7 +87,6 @@ export function Calendar() {
     }
   }
 
-  // Pad final week
   if (currentWeek.length > 0) {
     while (currentWeek.length < 7) {
       currentWeek.push(null);
@@ -101,7 +94,6 @@ export function Calendar() {
     weeks.push(currentWeek);
   }
 
-  // Selected date logs
   const selectedLogs = monthLogs.filter((l) => l.date === selectedDate);
   const getSelectedLog = (trackerId: string) => selectedLogs.find((l) => l.trackerId === trackerId);
 
@@ -132,44 +124,44 @@ export function Calendar() {
   ];
 
   return (
-    <div className="space-y-8 animate-pop-in">
-      <div className="flex items-center gap-3">
-        <CalendarIcon className="w-8 h-8 text-black stroke-[2.5]" />
+    <div className="space-y-8 animate-pop-in text-zinc-100 font-sans">
+      <div className="flex items-center gap-3 pb-4 border-b border-zinc-800">
+        <CalendarIcon className="w-6 h-6 text-zinc-400 stroke-[2]" />
         <div>
-          <h2 className="text-3xl font-display font-black text-black">Calendar</h2>
-          <p className="text-sm opacity-65 font-bold">View history and manage habit entries chronologically</p>
+          <h2 className="text-xl font-bold tracking-tight text-zinc-100">Calendar Log</h2>
+          <p className="text-xs text-zinc-400 font-medium mt-0.5">View history and manage habit entries chronologically</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Calendar Grid Card */}
-        <div className="lg:col-span-2 p-6 rounded-[18px] border-4 border-black bg-white shadow-[6px_6px_0px_#000000]">
+        <div className="lg:col-span-2 brutalist-card p-6">
           
           {/* Calendar Header Controls */}
-          <div className="flex items-center justify-between mb-6 pb-2 border-b-3 border-black">
-            <h3 className="font-display font-black text-xl text-black">
+          <div className="flex items-center justify-between mb-6 pb-2 border-b border-zinc-900">
+            <h3 className="font-semibold text-sm text-zinc-150">
               {monthNames[currentMonth]} {currentYear}
             </h3>
             
             <div className="flex items-center gap-2">
               <button 
                 onClick={handlePrevMonth}
-                className="w-9 h-9 border-2 border-black bg-white rounded-lg shadow-[2px_2px_0px_#000000] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#000000] active:translate-y-[2px] active:shadow-none flex items-center justify-center cursor-pointer font-black"
+                className="p-1.5 rounded border border-zinc-800 bg-zinc-900 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-850 cursor-pointer"
               >
-                <ChevronLeft className="w-4 h-4 stroke-[3]" />
+                <ChevronLeft className="w-4 h-4" />
               </button>
               <button 
                 onClick={handleNextMonth}
-                className="w-9 h-9 border-2 border-black bg-white rounded-lg shadow-[2px_2px_0px_#000000] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#000000] active:translate-y-[2px] active:shadow-none flex items-center justify-center cursor-pointer font-black"
+                className="p-1.5 rounded border border-zinc-800 bg-zinc-900 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-850 cursor-pointer"
               >
-                <ChevronRight className="w-4 h-4 stroke-[3]" />
+                <ChevronRight className="w-4 h-4" />
               </button>
             </div>
           </div>
 
           {/* Grid Layout */}
-          <div className="grid grid-cols-7 gap-2.5 text-center text-xs font-black uppercase opacity-75 mb-4 font-display">
+          <div className="grid grid-cols-7 gap-2.5 text-center text-[10px] font-mono font-semibold uppercase tracking-wider text-zinc-500 mb-4">
             <div>Sun</div>
             <div>Mon</div>
             <div>Tue</div>
@@ -182,7 +174,7 @@ export function Calendar() {
           {loadingLogs ? (
             <div className="grid grid-cols-7 gap-2.5">
               {Array(35).fill(0).map((_, i) => (
-                <div key={i} className="aspect-square rounded-xl border-2 border-dashed border-slate-300 animate-pulse bg-slate-50" />
+                <div key={i} className="aspect-square rounded border border-zinc-800 bg-zinc-900/20 animate-pulse" />
               ))}
             </div>
           ) : (
@@ -201,13 +193,13 @@ export function Calendar() {
                       <button
                         key={dIdx}
                         onClick={() => setSelectedDate(dateStr)}
-                        className={`aspect-square rounded-xl flex flex-col items-center justify-center relative font-mono text-xs transition-all hover:scale-105 cursor-pointer ${colorClass} ${
-                          isSelected ? 'ring-3 ring-black scale-102 shadow-[2px_2px_0px_#000000]' : ''
+                        className={`aspect-square rounded flex flex-col items-center justify-center relative font-mono text-[10px] transition-all hover:border-zinc-650 cursor-pointer ${colorClass} ${
+                          isSelected ? 'border-zinc-100 ring-1 ring-zinc-100' : ''
                         }`}
                       >
-                        <span className="font-extrabold text-sm">{day.getDate()}</span>
+                        <span className="font-semibold text-xs">{day.getDate()}</span>
                         {rate > 0 && (
-                          <span className="text-[9px] font-black opacity-80 mt-0.5 leading-none">
+                          <span className={`text-[8px] mt-0.5 leading-none ${rate === 100 ? 'text-zinc-950 font-bold' : 'text-zinc-500'}`}>
                             {rate}%
                           </span>
                         )}
@@ -222,15 +214,15 @@ export function Calendar() {
 
         {/* Selected Day Logs Panel */}
         <div className="space-y-6">
-          <div className="p-6 rounded-[18px] border-4 border-black bg-white shadow-[6px_6px_0px_#000000] flex flex-col">
-            <h3 className="font-display font-black text-lg mb-4 pb-2 border-b-3 border-black text-black">
-              {new Date(selectedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+          <div className="brutalist-card p-6 flex flex-col">
+            <h3 className="font-semibold text-sm text-zinc-150 mb-4 pb-2 border-b border-zinc-900">
+              {new Date(selectedDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
             </h3>
 
             {trackers.length === 0 ? (
-              <p className="text-xs font-bold opacity-60">No trackers active to display.</p>
+              <p className="text-xs text-zinc-500">No trackers active to display.</p>
             ) : (
-              <div className="space-y-4 flex-1 overflow-y-auto max-h-[50vh] pr-1">
+              <div className="space-y-3 flex-1 overflow-y-auto max-h-[50vh] pr-1">
                 {trackers.map((t) => {
                   const log = getSelectedLog(t.trackerId);
                   const isDone = log ? isTrackerCompleted(t, log.value) : false;
@@ -238,14 +230,14 @@ export function Calendar() {
                   return (
                     <div 
                       key={t.trackerId}
-                      className="p-3.5 rounded-xl border-3 border-black bg-white flex items-center justify-between gap-3 text-sm font-bold shadow-[3px_3px_0px_#000000]"
+                      className="p-3 rounded border border-zinc-800 bg-zinc-900/30 flex items-center justify-between gap-3 text-xs"
                     >
                       <div className="flex items-center gap-2.5">
-                        <span className="text-xl">{t.icon}</span>
+                        <span className="text-lg">{t.icon}</span>
                         <div>
-                          <div className="font-display font-black text-xs md:text-sm text-black">{t.name}</div>
+                          <div className="font-semibold text-zinc-200">{t.name}</div>
                           {t.type !== 'boolean' && (
-                            <div className="text-[10px] font-mono opacity-65 mt-0.5">
+                            <div className="text-[9px] font-mono text-zinc-500 mt-0.5">
                               Logged: {log ? log.value : '—'} / {t.target ?? 0} {t.unit}
                             </div>
                           )}
@@ -257,38 +249,38 @@ export function Calendar() {
                         {t.type === 'boolean' ? (
                           <button
                             onClick={() => toggleSelectedBoolean(t)}
-                            className={`p-1.5 rounded-lg border-2 border-black transition cursor-pointer active:scale-90 ${
+                            className={`p-1 rounded border transition-colors cursor-pointer active:scale-95 ${
                               isDone
-                                ? 'bg-[#90EE90] text-black shadow-[1px_1px_0px_#000000]'
-                                : 'bg-white text-black'
+                                ? 'bg-emerald-950/20 border-emerald-800 text-emerald-400'
+                                : 'bg-zinc-900 border-zinc-800 text-zinc-400'
                             }`}
                           >
-                            <CheckCircle className="w-5 h-5 stroke-[2.5]" />
+                            <CheckCircle className="w-4 h-4" />
                           </button>
                         ) : t.type === 'numeric' ? (
                           <div className="flex items-center gap-1.5">
                             <button
                               onClick={() => adjustSelectedNumeric(t, -1)}
-                              className="w-7 h-7 border-2 border-black bg-white rounded-lg flex items-center justify-center font-black active:translate-y-[1px]"
+                              className="w-6 h-6 border border-zinc-800 bg-zinc-900 hover:bg-zinc-850 rounded flex items-center justify-center text-zinc-400 hover:text-zinc-250 cursor-pointer"
                             >
-                              <Minus className="w-3.5 h-3.5 stroke-[3]" />
+                              <Minus className="w-3 h-3" />
                             </button>
-                            <span className="font-mono text-xs w-6 text-center font-black">
+                            <span className="font-mono text-xs w-6 text-center font-semibold text-zinc-300">
                               {log ? log.value : 0}
                             </span>
                             <button
                               onClick={() => adjustSelectedNumeric(t, 1)}
-                              className="w-7 h-7 border-2 border-black bg-white rounded-lg flex items-center justify-center font-black active:translate-y-[1px]"
+                              className="w-6 h-6 border border-zinc-800 bg-zinc-900 hover:bg-zinc-850 rounded flex items-center justify-center text-zinc-400 hover:text-zinc-250 cursor-pointer"
                             >
-                              <Plus className="w-3.5 h-3.5 stroke-[3]" />
+                              <Plus className="w-3 h-3" />
                             </button>
                           </div>
                         ) : (
                           // Duration read-only status tag
-                          <div className={`px-2 py-1 rounded-lg border-2 border-black text-[9px] font-black tracking-wider uppercase ${
-                            isDone ? 'bg-[#90EE90] text-black' : 'bg-slate-100 opacity-60 text-black'
+                          <div className={`px-2 py-0.5 rounded border text-[9px] font-mono uppercase tracking-wider ${
+                            isDone ? 'bg-emerald-950/20 border-emerald-800 text-emerald-400' : 'bg-zinc-900 border-zinc-800 text-zinc-550'
                           }`}>
-                            {isDone ? 'Goal met' : 'Unfinished'}
+                            {isDone ? 'Goal met' : 'Pending'}
                           </div>
                         )}
                       </div>

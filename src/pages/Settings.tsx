@@ -53,7 +53,6 @@ export function Settings() {
     loadMetadata();
   }, [spreadsheetId]);
 
-  /** Re-run Drive search + validation — useful after manually deleting/recreating a spreadsheet */
   const handleReconnect = async () => {
     setReconnecting(true);
     setReconnectResult(null);
@@ -75,7 +74,6 @@ export function Settings() {
     }
   };
 
-  /** Trigger automatic repair manually */
   const handleRepair = async () => {
     setRepairing(true);
     try {
@@ -126,55 +124,55 @@ export function Settings() {
   };
 
   return (
-    <div className="space-y-8 animate-pop-in text-black">
-      <div className="flex items-center gap-3">
-        <SettingsIcon className="w-8 h-8 text-black stroke-[2.5]" />
+    <div className="space-y-6 animate-pop-in text-zinc-100 font-sans bg-[#09090b]">
+      <div className="flex items-center gap-3 pb-4 border-b border-zinc-800">
+        <SettingsIcon className="w-6 h-6 text-zinc-400 stroke-[2]" />
         <div>
-          <h2 className="text-3xl font-display font-black text-black">Settings</h2>
-          <p className="text-sm opacity-65 font-bold">Workspace configuration and account management</p>
+          <h2 className="text-xl font-bold tracking-tight text-zinc-100">Settings Console</h2>
+          <p className="text-xs text-zinc-400 font-medium mt-0.5">Workspace configuration and account management</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         {/* Workspace Status + Reconnect */}
         <div className="lg:col-span-2 space-y-6">
 
-          <div className="p-6 rounded-[18px] border-4 border-black bg-white shadow-[6px_6px_0px_#000000]">
-            <h3 className="text-xl font-display font-black mb-4 pb-2 border-b-2 border-dashed border-slate-300">
+          <div className="brutalist-card p-6">
+            <h3 className="font-semibold text-xs md:text-sm text-zinc-200 mb-4 pb-2 border-b border-zinc-900">
               Connected Workspace
             </h3>
 
             {/* Spreadsheet info — read-only */}
             <div className="space-y-4">
-              <div className="flex items-start gap-3 p-4 rounded-xl border-3 border-black bg-[#FFF4D0] shadow-[3px_3px_0px_#000000]">
-                <Database className="w-5 h-5 shrink-0 stroke-[2.5] mt-0.5" />
-                <div className="min-w-0 space-y-1.5">
-                  <p className="text-xs font-black uppercase opacity-60">Track Wise Data — Google Sheets</p>
+              <div className="flex items-start gap-3 p-4 rounded border border-zinc-800 bg-zinc-900/30">
+                <Database className="w-5 h-5 shrink-0 text-zinc-400 mt-0.5" />
+                <div className="min-w-0 space-y-1.5 font-mono text-[10px]">
+                  <p className="font-semibold uppercase tracking-wider text-zinc-500">Track Wise Data — Google Sheets</p>
                   {spreadsheetId ? (
                     <>
-                      <p className="text-xs font-mono break-all opacity-80">
-                        <strong className="opacity-60">ID:</strong> {spreadsheetId}
+                      <p className="break-all text-zinc-350">
+                        <strong className="text-zinc-500 font-normal">ID:</strong> {spreadsheetId}
                       </p>
                       {workspaceMeta && (
-                        <div className="text-xs space-y-1 pt-1 border-t border-dashed border-black/10 font-bold opacity-80">
-                          <p><span className="opacity-60 font-semibold">Owner Email:</span> {workspaceMeta.ownerEmail}</p>
-                          <p><span className="opacity-60 font-semibold">Schema Version:</span> {workspaceMeta.schemaVersion}</p>
-                          <p><span className="opacity-60 font-semibold">Workspace Version:</span> {workspaceMeta.workspaceVersion}</p>
+                        <div className="space-y-1 pt-2 border-t border-zinc-800 text-zinc-400">
+                          <p><span className="text-zinc-500">Owner Email:</span> {workspaceMeta.ownerEmail}</p>
+                          <p><span className="text-zinc-500">Schema Version:</span> {workspaceMeta.schemaVersion}</p>
+                          <p><span className="text-zinc-500">Workspace Version:</span> {workspaceMeta.workspaceVersion}</p>
                         </div>
                       )}
                     </>
                   ) : (
-                    <p className="text-xs font-bold text-red-600">No spreadsheet connected</p>
+                    <p className="font-bold text-red-400">No spreadsheet connected</p>
                   )}
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-3 pt-1">
+              <div className="flex flex-wrap gap-2 pt-1">
                 <button
                   onClick={handleReconnect}
                   disabled={reconnecting}
-                  className="neo-btn bg-[#90EE90] border-3 border-black text-black px-5 py-2.5 text-xs shadow-[3px_3px_0px_#000000] active:translate-y-[2px] active:shadow-none hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_#000000] cursor-pointer flex items-center gap-2 disabled:opacity-50"
+                  className="bg-emerald-950/20 hover:bg-emerald-950/40 text-emerald-450 border border-emerald-800 px-4 py-2 rounded text-xs font-semibold cursor-pointer transition-colors disabled:opacity-50 flex items-center gap-1.5"
                 >
                   {reconnecting ? (
                     <>
@@ -183,7 +181,7 @@ export function Settings() {
                     </>
                   ) : (
                     <>
-                      <RefreshCw className="w-3.5 h-3.5 stroke-[2.5]" />
+                      <RefreshCw className="w-3.5 h-3.5" />
                       Reconnect Workspace
                     </>
                   )}
@@ -192,7 +190,7 @@ export function Settings() {
                 <button
                   onClick={handleRepair}
                   disabled={repairing || !spreadsheetId}
-                  className="neo-btn bg-[#FFD27F] border-3 border-black text-black px-5 py-2.5 text-xs shadow-[3px_3px_0px_#000000] active:translate-y-[2px] active:shadow-none hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_#000000] cursor-pointer flex items-center gap-2 disabled:opacity-50"
+                  className="bg-amber-950/20 hover:bg-amber-950/40 text-amber-450 border border-amber-800 px-4 py-2 rounded text-xs font-semibold cursor-pointer transition-colors disabled:opacity-50 flex items-center gap-1.5"
                 >
                   {repairing ? (
                     <>
@@ -201,7 +199,7 @@ export function Settings() {
                     </>
                   ) : (
                     <>
-                      <RefreshCw className="w-3.5 h-3.5 stroke-[2.5]" />
+                      <RefreshCw className="w-3.5 h-3.5" />
                       Repair Workspace
                     </>
                   )}
@@ -212,24 +210,24 @@ export function Settings() {
                     href={`https://docs.google.com/spreadsheets/d/${spreadsheetId}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="neo-btn bg-white border-3 border-black text-black px-5 py-2.5 text-xs shadow-[3px_3px_0px_#000000] active:translate-y-[2px] active:shadow-none hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_#000000] cursor-pointer flex items-center gap-1.5"
+                    className="bg-zinc-900 hover:bg-zinc-850 text-zinc-350 border border-zinc-800 px-4 py-2 rounded text-xs font-semibold cursor-pointer transition-colors flex items-center gap-1.5"
                   >
                     Open in Google Sheets
-                    <ExternalLink className="w-3.5 h-3.5 stroke-[2.5]" />
+                    <ExternalLink className="w-3.5 h-3.5" />
                   </a>
                 )}
               </div>
             </div>
 
             {reconnectResult && (
-              <div className={`mt-4 p-4 rounded-xl border-3 border-black text-xs font-black leading-relaxed flex items-start gap-2.5 ${
+              <div className={`mt-4 p-4 rounded border text-xs font-mono flex items-start gap-2.5 ${
                 reconnectResult.success
-                  ? 'bg-[#90EE90] shadow-[2px_2px_0px_#000000]'
-                  : 'bg-[#FF6B6B] shadow-[2px_2px_0px_#000000]'
+                  ? 'border-emerald-800 bg-emerald-950/15 text-emerald-400'
+                  : 'border-red-950 bg-red-950/15 text-red-400'
               }`}>
                 {reconnectResult.success
-                  ? <CheckCircle2 className="w-5 h-5 shrink-0 stroke-[2.5]" />
-                  : <XCircle className="w-5 h-5 shrink-0 stroke-[2.5]" />
+                  ? <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
+                  : <XCircle className="w-4 h-4 shrink-0 mt-0.5" />
                 }
                 <span>{reconnectResult.message}</span>
               </div>
@@ -238,30 +236,30 @@ export function Settings() {
 
           {/* Google Account Profile */}
           {profile && (
-            <div className="p-6 rounded-[18px] border-4 border-black bg-white shadow-[6px_6px_0px_#000000]">
-              <h3 className="text-xl font-display font-black mb-4 pb-2 border-b-2 border-dashed border-slate-300">Google Account</h3>
+            <div className="brutalist-card p-6">
+              <h3 className="font-semibold text-xs md:text-sm text-zinc-200 mb-4 pb-2 border-b border-zinc-900">Google Account</h3>
 
               <div className="flex items-center gap-4">
                 {profile.picture ? (
-                  <img src={profile.picture} alt={profile.name} className="w-16 h-16 rounded-full border-3 border-black shadow-[3px_3px_0px_#000000]" />
+                  <img src={profile.picture} alt={profile.name} className="w-12 h-12 rounded-full border border-zinc-800" />
                 ) : (
-                  <div className="w-16 h-16 rounded-full bg-[#FFB2EF] border-3 border-black flex items-center justify-center font-black text-2xl shadow-[3px_3px_0px_#000000]">
+                  <div className="w-12 h-12 rounded-full bg-zinc-800 border border-zinc-700 text-zinc-200 flex items-center justify-center font-bold text-lg">
                     {profile.name[0]}
                   </div>
                 )}
                 <div>
-                  <h4 className="font-display font-black text-lg leading-tight">{profile.name}</h4>
-                  <p className="text-xs font-bold opacity-60 mt-0.5">{profile.email}</p>
-                  <p className="text-xs font-bold opacity-40 mt-1">OAuth Session Active</p>
+                  <h4 className="font-semibold text-sm leading-tight text-zinc-200">{profile.name}</h4>
+                  <p className="text-xs text-zinc-500 mt-0.5 font-mono">{profile.email}</p>
+                  <p className="text-[10px] text-zinc-650 font-semibold uppercase tracking-wider mt-1">OAuth Session Active</p>
                 </div>
               </div>
 
-              <div className="mt-6 pt-4 border-t-2 border-dashed border-slate-300">
+              <div className="mt-6 pt-4 border-t border-zinc-900">
                 <button
                   onClick={handleLogout}
-                  className="neo-btn bg-[#FF6B6B] border-3 border-black text-black px-5 py-2.5 text-xs shadow-[3px_3px_0px_#000000] active:translate-y-[2px] active:shadow-none hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_#000000] cursor-pointer flex items-center gap-2"
+                  className="bg-red-950/20 hover:bg-red-950/40 text-red-450 border border-red-900 px-4 py-2 rounded text-xs font-semibold cursor-pointer transition-colors flex items-center gap-1.5"
                 >
-                  <LogOut className="w-4 h-4 stroke-[2.5]" />
+                  <LogOut className="w-3.5 h-3.5" />
                   Sign Out
                 </button>
               </div>
@@ -271,29 +269,28 @@ export function Settings() {
 
         {/* Sidebar — Backup + Tips */}
         <div className="space-y-6">
-          <div className="p-6 rounded-[18px] border-4 border-black bg-white shadow-[6px_6px_0px_#000000]">
-            <h3 className="text-xl font-display font-black mb-4 pb-2 border-b-2 border-dashed border-slate-300">Backup</h3>
+          <div className="brutalist-card p-6">
+            <h3 className="font-semibold text-xs md:text-sm text-zinc-200 mb-4 pb-2 border-b border-zinc-900">Backup Console</h3>
 
             <button
               onClick={handleExportJSON}
               disabled={!spreadsheetId}
-              className="neo-btn bg-[#FFB2EF] border-3 border-black text-black w-full p-4 text-sm shadow-[3px_3px_0px_#000000] active:translate-y-[2px] active:shadow-none hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_#000000] cursor-pointer flex items-center justify-between disabled:opacity-40"
+              className="bg-blue-950/20 hover:bg-blue-950/40 text-blue-450 border border-blue-900 w-full p-3 rounded text-xs font-semibold cursor-pointer transition-colors flex items-center justify-between disabled:opacity-40"
             >
               <span>Download JSON backup</span>
-              <Download className="w-4 h-4 stroke-[2.5]" />
+              <Download className="w-3.5 h-3.5" />
             </button>
           </div>
 
-          <div className="p-6 rounded-[18px] border-4 border-black bg-[#FFF4D0] shadow-[6px_6px_0px_#000000] text-xs font-bold leading-relaxed">
-            <div className="flex items-center gap-2 mb-3">
-              <Info className="w-4 h-4 stroke-[2.5] shrink-0" />
-              <h4 className="font-display font-black text-sm">Important Notes</h4>
+          <div className="brutalist-card p-6 border border-zinc-800 bg-zinc-900/10 text-xs leading-relaxed space-y-3">
+            <div className="flex items-center gap-2 pb-2 border-b border-zinc-900">
+              <Info className="w-4 h-4 text-zinc-400 shrink-0" />
+              <h4 className="font-semibold text-zinc-250">Configuration Rules</h4>
             </div>
-            <ul className="list-disc pl-4 space-y-1.5 font-medium">
-              <li>Do not rename tabs like <code>Categories</code>, <code>Trackers</code>, or <code>Entries</code> in Google Sheets.</li>
-              <li>Do not delete or change headers in row 1.</li>
-              <li>If you rename the file, use <strong>Reconnect Workspace</strong> — it searches by name.</li>
-              <li>Use File → Download → CSV in Google Sheets to export individual tabs.</li>
+            <ul className="list-disc pl-4 space-y-1.5 font-mono text-[10px] text-zinc-500">
+              <li>Do not rename worksheet tabs (Categories, Trackers, Entries, Settings).</li>
+              <li>Do not modify or rearrange headers in row 1.</li>
+              <li>Spreadsheet lookup operates by name. Use Reconnect Workspace if renamed.</li>
             </ul>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { X } from 'lucide-react';
 
 interface ModalProps {
@@ -27,18 +27,18 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
       {/* Backdrop */}
       <div 
         onClick={onClose}
-        className="absolute inset-0 bg-black/40 backdrop-blur-xs transition-opacity duration-300"
+        className="absolute inset-0 bg-black/60 backdrop-blur-xs transition-opacity duration-300"
       />
 
-      {/* Card Content (Neo-Brutalist Panel) */}
-      <div className="relative w-full max-w-lg rounded-[18px] border-4 border-black bg-white p-6 overflow-hidden animate-pop-in shadow-[6px_6px_0px_#000000] text-black">
-        <div className="flex items-center justify-between mb-6 pb-2 border-b-3 border-black">
-          <h3 className="font-display font-black text-xl tracking-tight">{title}</h3>
+      {/* Card Content (Minimalist Brutalist Panel) */}
+      <div className="relative w-full max-w-lg rounded-lg border border-zinc-800 bg-zinc-950 p-5 overflow-hidden animate-pop-in shadow-2xl text-zinc-100 z-10">
+        <div className="flex items-center justify-between mb-4 pb-2 border-b border-zinc-900">
+          <h3 className="font-semibold text-sm tracking-tight text-zinc-100">{title}</h3>
           <button 
             onClick={onClose}
-            className="p-1.5 rounded-lg border-2 border-black bg-white shadow-[2px_2px_0px_#000000] active:translate-y-[2px] active:shadow-none hover:bg-rose-50 transition cursor-pointer"
+            className="p-1 rounded border border-zinc-800 bg-zinc-900 hover:bg-zinc-850 transition text-zinc-400 hover:text-zinc-100 cursor-pointer"
           >
-            <X className="w-5 h-5 stroke-[2.5]" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
